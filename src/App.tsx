@@ -1,5 +1,10 @@
-import {useEffect, useMemo, useState} from 'react';
-import { Box } from '@mui/material';
+import {
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
+import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useAppDispatch, useAppSelector } from './hooks/redux';
 import { getAll, removeTodo, toggleTodo } from './store/todo/slice';
@@ -20,6 +25,7 @@ const App = () => {
   const { todos } = useAppSelector(state => state.todoReducer);
   const { showDone } = useAppSelector(state => state.visibilityReducer);
   const dispatch = useAppDispatch();
+  const deferredSearchValue = useDeferredValue(searchValue);
 
   const storedFrameTodos = getStateFromLocalStorage('todos');
 
@@ -47,12 +53,13 @@ const App = () => {
   };
 
   const changeSearchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
+    const value = e.target.value;
+    setSearchValue(value);
   };
 
   const sortedTodo = useMemo(() => {
-    return todos.filter(todo => todo.task.toLowerCase().includes(searchValue.toLowerCase()))
-  }, [todos, searchValue]);
+    return todos.filter(todo => todo.task.toLowerCase().includes(deferredSearchValue.toLowerCase()))
+  }, [todos, deferredSearchValue]);
 
   const filteredDoneTodos = sortedTodo.filter((todo: Todo) => todo.completed);
   const visibleTodos = showDone ? filteredDoneTodos : sortedTodo;
@@ -63,6 +70,7 @@ const App = () => {
        value={searchValue}
        changeHandler={(e: React.ChangeEvent<HTMLInputElement>) => changeSearchHandler(e)}
      />
+     { !todos.length && <Typography variant='h5'>No tasks yet!</Typography> }
      <TodoList
        todos={visibleTodos}
        removeHandler={removeTodoHandler}

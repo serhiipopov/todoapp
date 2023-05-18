@@ -64,7 +64,7 @@ const Button = styled(CustomButton)`
 `;
 
 const TodoForm = () => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState<string>('');
   const dispatch = useAppDispatch();
   const { handleSubmit, register, formState: { errors } } = useForm({
     resolver: yupResolver(validationTodoForm),
