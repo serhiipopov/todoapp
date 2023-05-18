@@ -15,11 +15,11 @@ interface TodoProps {
   handleOpen: () => void;
 }
 
-const TodoContainer = styled(Box)(({ completed }: { completed: boolean | undefined }) => ({
+const TodoContainer = styled(Box)(({ completed }: { completed: string }) => ({
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
-  textDecoration: completed ? 'line-through' : 'none',
+  textDecoration: completed === 'true' ? 'line-through' : 'none',
   padding: '11px 0',
 }));
 
@@ -42,8 +42,15 @@ const ClassesCheckbox = styled(Checkbox)`
 `;
 
 const ClassesTypography = styled(Typography)`
+  display: block;
+  max-width: 350px;
   font-weight: 400;
   font-size: 14px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const Todo = ({
@@ -68,7 +75,7 @@ const Todo = ({
 
   return (
     <BoxWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <TodoContainer completed={completed ? completed : undefined}>
+      <TodoContainer completed={String(completed)}>
         <ClassesCheckbox
           size='small'
           checked={completed}

@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useAppDispatch, useAppSelector } from './hooks/redux';
-import { removeTodo, toggleTodo } from './store/todo/slice';
+import { getAll, removeTodo, toggleTodo } from './store/todo/slice';
+import { getStateFromLocalStorage } from './utils/localStorage';
 import TodoList from './components/TodoList/TodoList';
 import TodoForm from './components/TodoForm/TodoForm';
 import SearchTodo from './components/SearchTodo/SearchTodo';
@@ -19,6 +20,14 @@ const App = () => {
   const { todos } = useAppSelector(state => state.todoReducer);
   const { showDone } = useAppSelector(state => state.visibilityReducer);
   const dispatch = useAppDispatch();
+
+  const storedFrameTodos = getStateFromLocalStorage('todos');
+
+  useEffect(() => {
+    if (storedFrameTodos !== undefined) {
+      dispatch(getAll(storedFrameTodos));
+    }
+  }, [dispatch]);
 
   const toggleCompletedHandler = (id: string) => {
     dispatch(toggleTodo(id))
