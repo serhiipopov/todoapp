@@ -12,8 +12,8 @@ const ConfirmDelete = ({ onDelete, onClose, isOpen }: ConfirmDeleteProps) => {
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitle>Are you sure you want to delete this task?</DialogTitle>
       <DialogActions>
-        <CustomButton name='Yes' onClick={onDelete} color='warning' autoFocus />
-        <CustomButton name='No' onClick={onClose} color='primary' />
+        <CustomButton name='Yes' onClick={onDelete} autoFocus />
+        <CustomButton name='No' onClick={onClose} />
       </DialogActions>
     </Dialog>
   );

@@ -1,8 +1,10 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import todoReducer from './todo/slice';
+import visibilityReducer from './visibility/slice';
 
 const rootReducer = combineReducers({
-  todoReducer
+  todoReducer,
+  visibilityReducer
 })
 
 export const setupStore = () => {

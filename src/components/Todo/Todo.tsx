@@ -15,7 +15,7 @@ interface TodoProps {
   handleOpen: () => void;
 }
 
-const TodoContainer = styled(Box)(({ completed }: { completed: boolean }) => ({
+const TodoContainer = styled(Box)(({ completed }: { completed: boolean | undefined }) => ({
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
@@ -32,7 +32,7 @@ const BoxWrapper = styled(Box)`
   &:hover {
     background: #F3F3F3;
     border-radius: 4px;
-}
+  }
 `;
 
 const ClassesCheckbox = styled(Checkbox)`
@@ -58,12 +58,17 @@ const Todo = ({
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const updatedLetterTask = capitalizeFirstLetter(task);
 
+  const handleMouseEnter = () => {
+    setIsFocused(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsFocused(false);
+  };
+
   return (
-    <BoxWrapper
-      onMouseLeave={() => setIsFocused(false)}
-      onMouseOver={() => setIsFocused(true)}
-    >
-      <TodoContainer completed={completed}>
+    <BoxWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <TodoContainer completed={completed ? completed : undefined}>
         <ClassesCheckbox
           size='small'
           checked={completed}

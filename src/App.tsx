@@ -1,50 +1,69 @@
-import { useState } from 'react';
-import { Box as MUIBox } from '@mui/material';
+import { useMemo, useState } from 'react';
+import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useAppDispatch, useAppSelector } from './hooks/redux';
 import { removeTodo, toggleTodo } from './store/todo/slice';
 import TodoList from './components/TodoList/TodoList';
 import TodoForm from './components/TodoForm/TodoForm';
+import SearchTodo from './components/SearchTodo/SearchTodo';
+import { Todo } from './types/todo';
 
-const Box = styled(MUIBox)`
+const ContainerBox = styled(Box)`
   width: 556px;
-  padding-top: 34px;
+  padding: 34px 55px 0 16px;
 `;
 
 const App = () => {
-  const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [openPopupId, setOpenPopupId] = useState<string>('');
   const { todos } = useAppSelector(state => state.todoReducer);
+  const { showDone } = useAppSelector(state => state.visibilityReducer);
   const dispatch = useAppDispatch();
 
   const toggleCompletedHandler = (id: string) => {
     dispatch(toggleTodo(id))
   }
 
-  const handleClose = () => {
-    setIsOpenPopup(false);
+  const handleOpenPopup = (id: string) => {
+    setOpenPopupId(id);
   };
 
-  const handleOpen = () => {
-    setIsOpenPopup(true);
+  const handleClosePopup = () => {
+    setOpenPopupId('');
   };
 
   const removeTodoHandler = (id: string) => {
     dispatch(removeTodo(id))
-    handleClose();
+    handleClosePopup();
   };
 
+  const changeSearchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+  };
+
+  const sortedTodo = useMemo(() => {
+    return todos.filter(todo => todo.task.toLowerCase().includes(searchValue.toLowerCase()))
+  }, [todos, searchValue]);
+
+  const filteredDoneTodos = sortedTodo.filter((todo: Todo) => todo.completed);
+  const visibleTodos = showDone ? filteredDoneTodos : sortedTodo;
+
   return (
-   <Box>
+   <ContainerBox>
+     <SearchTodo
+       value={searchValue}
+       changeHandler={(e: React.ChangeEvent<HTMLInputElement>) => changeSearchHandler(e)}
+     />
      <TodoList
-       todos={todos}
+       todos={visibleTodos}
        removeHandler={removeTodoHandler}
        toggleHandler={toggleCompletedHandler}
-       handleClose={handleClose}
-       handleOpen={handleOpen}
-       isOpenPopup={isOpenPopup}
+       handleClose={handleClosePopup}
+       handleOpen={handleOpenPopup}
+       openPopupId={openPopupId}
      />
      <TodoForm />
-   </Box>
+   </ContainerBox>
   );
 };
 

@@ -7,21 +7,24 @@ interface TodoListProps {
   removeHandler: (id: string) => void;
   toggleHandler: (id: string) => void;
   handleClose: () => void;
-  handleOpen: () => void;
-  isOpenPopup: boolean;
+  handleOpen: (id: string) => void;
+  openPopupId: string;
 }
 
 const TodoList = ({
   todos,
   removeHandler,
   toggleHandler,
-  isOpenPopup,
+  openPopupId,
   handleClose,
   handleOpen,
   }: TodoListProps) => {
   return (
-    <Stack>
-      {todos.map(({ id, task, completed }) => (
+    <Stack sx={{ maxWidth: 485 }}>
+      {todos?.map(({ id, task, completed }) => {
+        const isOpenPopup = openPopupId === id;
+
+        return (
         <Todo
           key={id}
           task={task}
@@ -30,9 +33,10 @@ const TodoList = ({
           toggleHandler={() => toggleHandler(id)}
           isOpenPopup={isOpenPopup}
           handleClose={handleClose}
-          handleOpen={handleOpen}
+          handleOpen={() => handleOpen(id)}
         />
-      ))}
+        )
+      })}
     </Stack>
   );
 };
